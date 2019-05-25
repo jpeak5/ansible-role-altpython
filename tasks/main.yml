@@ -1,0 +1,25 @@
+---
+- apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - curl
+      - build-essential
+      - libffi-dev
+      - zlib1g-dev
+      - libssl-dev
+
+- unarchive:
+    src: "https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz"
+    dest: "{{ download_directory }}/"
+    remote_src: yes
+
+- shell: ./configure && make && make altinstall
+  args:
+    chdir: "{{ download_directory}}/Python-{{ python_version }}"
+
+
+- file:
+    path: "{{ download_directory }}/Python-{{ python_version }}"
+    state: absent
+  when: cleanup_after
